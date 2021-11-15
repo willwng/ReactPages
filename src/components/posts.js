@@ -42,7 +42,7 @@ const Posts = () => {
  */
 const ExampleToast = ({ posts }) => {
   return (
-    <ToastContainer>
+    <ToastContainer >
       {posts.map((post) => (
         <Toast key={post.id}>
           <Toast.Header>
@@ -93,8 +93,8 @@ const PostForm = () => {
  * @returns Numbers of days since posted
  */
 function daysFromToday(posted) {
-  var today = Date.now();
-  var parsed = Date.parse(posted);
+  var today = new Date()
+  var parsed = new Date(posted);
   var time_difference = new Date(today - parsed);
   return (
     <>
@@ -124,16 +124,13 @@ function createPost(title, text) {
     text = "I am at a loss for words"
   }
   // Randomly generate id and get the date
-  const body = JSON.stringify({ id: randomID(), title: title, text: text, published_at: Date.now().toString() })
+  const body = JSON.stringify({ id: randomID(), title: title, text: text, published_at: (new Date()).toString() })
   // Post request!
   fetch("https://serverless-api.wyw6.workers.dev/api/posts", {
     method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json', },
     body: body
-  })
+  });
   console.log(body)
 }
 
