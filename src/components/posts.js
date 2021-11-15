@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "@reach/router";
-import Toast from 'react-bootstrap/Toast';
-import ToastContainer from 'react-bootstrap/ToastContainer'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+
+import NavDropdown from 'react-bootstrap/NavDropdown'
+
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { useForm } from "react-hook-form";
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -23,35 +29,73 @@ const Posts = () => {
   return (
 
     <div style={{ textAlign: "center" }}>
-      <h1>Dalio</h1>
-      <CreatePost></CreatePost>
-
+      <NavBar></NavBar>
       <Container className="p-3">
         <Container className="p-5 mb-4 bg-light rounded-3">
-          <ExampleToast posts={posts}>
-          </ExampleToast>
+          <PostCard posts={posts}>
+          </PostCard>
         </Container>
       </Container>
+      <CreatePost></CreatePost>
+
     </div>
   );
 };
+
+
+/**
+ * @returns A simple navigation bar on the top
+ */
+const NavBar = () => {
+  return (<Navbar collapseOnSelect expand="lg" bg="success" variant="dark">
+    <Container>
+      <Navbar.Brand href="#home">
+        <img
+          src="/icon.ico"
+          width="30"
+          height="30"
+          color="white"
+          className="d-inline-block align-top"
+        />
+        Dalio
+      </Navbar.Brand>
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+        </Nav>
+        <Nav>
+          <Nav.Link href="#Todo">Login</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Container>
+  </Navbar>);
+}
 
 /**
  * @param {*} param0: json of post data 
  * @returns A collection of toasts with posts
  */
-const ExampleToast = ({ posts }) => {
+const PostCard = ({ posts }) => {
   return (
-    <ToastContainer >
+    <Row xs={1} md={3} className="g-4">
       {posts.map((post) => (
-        <Toast key={post.id}>
-          <Toast.Header>
-            <strong className="me-auto">{post.title}</strong>
-            <small className="text-muted">{daysFromToday(post.published_at)} days ago </small>
-          </Toast.Header>
-          <Toast.Body>{post.text}</Toast.Body>
-        </Toast>))}
-    </ToastContainer>
+        <Col>
+          <Card key={post.id} style={{ borderRadius: "20px" }}>
+            <Card.Body>
+              <Card.Title>
+                <Link to={`/posts/${post.id}`}
+                  style={{ color: "black", textDecoration: "none" }}
+                  className="me-auto">{post.title}
+                </Link>
+              </Card.Title>
+              <Card.Text>
+                {post.text}
+                <small className="text-muted">  {daysFromToday(post.published_at)} days ago </small>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
   );
 };
 
@@ -76,9 +120,12 @@ const CreatePost = () => {
  */
 const PostForm = () => {
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => createPost(data.title, data.text);
+  const onSubmit = (data) => {
+    document.getElementById("postForm").reset();
+    createPost(data.title, data.text);
+  }
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form id="postForm" onSubmit={handleSubmit(onSubmit)}>
       <input {...register("title")} placeholder="Title" />
       <input {...register("text")} placeholder="My Thoughts" />
       <Button type="submit" variant="secondary" size="sm">
@@ -131,7 +178,6 @@ function createPost(title, text) {
     headers: { 'Content-Type': 'application/json', },
     body: body
   });
-  console.log(body)
 }
 
 export default Posts;
