@@ -34,6 +34,7 @@ const Posts = () => {
   );
 };
 
+
 /**
  * @param {*} param0: json of post data 
  * @returns A collection of toasts with posts
@@ -55,7 +56,7 @@ const PostCard = ({ posts }) => {
                 {post.text}
                 <br></br>
                 <small className="text-muted">
-                  {daysFromToday(post.published_at)} days ago
+                  {daysFromToday(post.published_at)}
                 </small>
               </Card.Text>
             </Card.Body>
@@ -71,12 +72,20 @@ const PostCard = ({ posts }) => {
  * @returns Numbers of days since posted
  */
 function daysFromToday(posted) {
-  var today = new Date()
-  var parsed = new Date(posted);
-  var time_difference = new Date(today - parsed);
+  const today = new Date()
+  const parsed = new Date(posted);
+  const diffTime = Math.abs(today - parsed);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  var output = new String(diffDays);
+  if (diffDays > 1) {
+    output += " days ago";
+  }
+  else {
+    output += " day ago";
+  }
   return (
     <>
-      {time_difference.getDay()}
+      {output}
     </>);
 }
 
